@@ -44,6 +44,7 @@ class Card:
         """Validation of suit type and values."""
 
         valid_suits = []
+
         for utf_char, char_literal in CARD_SUITS.values():
             valid_suits.extend([utf_char, char_literal])
     
@@ -89,6 +90,7 @@ class Card:
             raise TypeError("New worth must be an integer.")
         if not (1 <= new_worth <= 11):
             raise ValueError("Worth must be between 1 and 11.")
+        
         self.__worth = new_worth
         
     # Card creation:
@@ -191,7 +193,19 @@ class DeckOfCards:
         
         Returns:
             Shuffled deque containing Card objects.
+
+        Raises:
+            ValueError: Count has to be greater or equal to 1 deck
+            TypeError: Count variable has to be integer
+            
         """
+
+        if not isinstance(count, int):
+            raise ValueError("Count must be an integer.")
+
+        if count < 1:
+            raise ValueError("Count must be at least 1.")
+
             
         # set decks card counts, main data structure:
         self.deck_cards = count * 52
@@ -240,7 +254,21 @@ class DeckOfCards:
         
         Returns:
             The dealt Card object.
-    """
+
+        Raises:
+            ValueError: side from bottom or top of the playing card deck
+            RuntimeError: using method before creating deck
+            IndexError: no cards left option
+
+        """
+        if not (side == "top" or side == "bottom"):
+            raise ValueError("Side has to be top/bottom stack.")
+        
+        if self.deck_cards == 0:
+            raise RuntimeError("Create deck before calling deal_card.")
+        
+        if self.deck_cards == self.discarded_card + self.dealt_cards:
+            raise IndexError("No cards left. Please use another deck of cards.")
 
         if side == "bottom":
 
@@ -260,7 +288,21 @@ class DeckOfCards:
             deck: The deck to deal from.
             side: Which end to deal from ('top' or 'bottom').
 
+        Raises:
+            ValueError: side from bottom or top of the playing card deck
+            RuntimeError: using method before creating deck
+            IndexError: no cards left option
+
         """
+
+        if not (side == "top" or side == "bottom"):
+            raise ValueError("Side has to be top/bottom stack.")
+        
+        if self.deck_cards == 0:
+            raise RuntimeError("Create deck before calling discard_card.")
+        
+        if self.deck_cards == self.discarded_card + self.dealt_cards:
+            raise IndexError("No cards left. Please use another deck of cards.")
 
         if side == "bottom":
 
